@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-// Bootstrap
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// Bootstrap SCSS main
+import "./scss/main.scss";
 
 // FontAwesome (Icons)
 import { library } from '@fortawesome/fontawesome-svg-core'
