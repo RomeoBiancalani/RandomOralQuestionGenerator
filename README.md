@@ -1,5 +1,5 @@
 # RandomOralQuestionGenerator
-A program designed by a student for teachers to handle oral questions.
+A program designed by some student for teachers to handle oral tests.
 
 ## To Run
 ```
