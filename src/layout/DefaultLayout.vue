@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-custom">
+  <nav class="navbar navbar-expand-lg navbar-custom" role="navigation">
     <div class="container-fluid">
       <!-- {{$route.path}} -->
       <router-link class="navbar-brand" to="/">{{navbarBrand}}</router-link>

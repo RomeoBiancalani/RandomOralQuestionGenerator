@@ -10,7 +10,7 @@
           <div
             class="progress"
             role="progressbar"
-            style="height: 2px; margin:2px;"
+            style="height: 2px; margin:2px; margin-bottom:5px"
           >
             <div class="progress-bar bg-secondary" :style="'width: ' + item.questionedPercent + '%'"></div>
           </div>
