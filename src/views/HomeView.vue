@@ -8,7 +8,7 @@
     <!-- Modal Inserisci Nome -->
     <!-- TODO: Fixare il vertically centered che non va con jquery -->
     <div
-      class="modal modal-dialog-centered fade"
+      class="modal fade"
       id="insertNameModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
@@ -67,6 +67,7 @@ export default defineComponent({
         $("#insertNameModal").modal("show");
       } else {
         vm.name = value;
+        $("#insertNameModal").modal("hide");
       }
     });
   },
