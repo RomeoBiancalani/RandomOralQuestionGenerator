@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ClassesView from '../views/ClassesView.vue'
 import DefaultLayout from '../layout/DefaultLayout.vue'
+import SingleclassView from '../views/SingleclassView.vue'
 import localforage from 'localforage'
 
 /*
@@ -38,6 +39,17 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresAuth: true
     },
+  },
+
+  {
+    path: '/singleclass',
+    name: 'SingleClass',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '', component: SingleclassView
+      }
+    ]
   }
 ]
 
