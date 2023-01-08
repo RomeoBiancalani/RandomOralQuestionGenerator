@@ -16,13 +16,21 @@
 
     <br />
     <h4>Le tue classi</h4>
-    <div id="classCreatedAlert" style="display: none;">
-      <div class="alert alert-primary alert-dismissible d-flex align-items-center" role="alert">
-        <font-awesome-icon icon="fa-solid fa-check" style="margin-right: 5px;" />
+    <div id="classCreatedAlert" style="display: none">
+      <div
+        class="alert alert-primary alert-dismissible d-flex align-items-center"
+        role="alert"
+      >
+        <font-awesome-icon icon="fa-solid fa-check" style="margin-right: 5px" />
         <div>
           Classe aggiunta con successo!
           <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
-          <button type="button" class="btn-close" @click="closeAlert('#classCreatedAlert')" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            @click="closeAlert('#classCreatedAlert')"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
     </div>
@@ -50,13 +58,23 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div id="errorClass" style="display: none;">
-              <div class="alert alert-info alert-dismissible d-flex align-items-center" role="alert">
-              <font-awesome-icon icon="fa-solid fa-circle-exclamation" style="margin-right: 5px;" />
+            <div id="errorClass" style="display: none">
+              <div
+                class="alert alert-info alert-dismissible d-flex align-items-center"
+                role="alert"
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-circle-exclamation"
+                  style="margin-right: 5px"
+                />
                 <div>
                   {{ errorClassText }}
                   <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
-                  <button type="button" class="btn-close" @click="closeAlert('#errorClass')"></button>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    @click="closeAlert('#errorClass')"
+                  ></button>
                 </div>
               </div>
             </div>
@@ -94,14 +112,12 @@ Gaia Martinelli"
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-info"
-              data-bs-dismiss="modal"
-            >
+            <button type="button" class="btn btn-info" data-bs-dismiss="modal">
               Annulla
             </button>
-            <button type="button" class="btn btn-primary" @click="saveClass">Salva</button>
+            <button type="button" class="btn btn-primary" @click="saveClass">
+              Salva
+            </button>
           </div>
         </div>
       </div>
@@ -112,7 +128,7 @@ Gaia Martinelli"
 <script>
 import { defineComponent, ref } from "vue";
 import Classes from "@/components/Classes.vue";
-import {insertClass, getAllClasses} from "@/modules/database.js";
+import { insertClass, getAllClasses } from "@/modules/database.js";
 import localforage from "localforage";
 
 export default defineComponent({
@@ -124,7 +140,7 @@ export default defineComponent({
       name: ref(""),
       classStudentsInput: "",
       classNameInput: "",
-      errorClassText: ref("")
+      errorClassText: ref(""),
     };
   },
   mounted() {
@@ -134,43 +150,44 @@ export default defineComponent({
     });
 
     // Controllo quando si chiude il modal dell'aggiunta della classe per pulire le variabili
-    $('#newClassModal').on('hidden.bs.modal', function (e) {
-      console.log("Modal Nascosto")
-      console.log("Variabili", vm.classStudentsInput, vm.classNameInput)
+    $("#newClassModal").on("hidden.bs.modal", function (e) {
+      console.log("Modal Nascosto");
+      console.log("Variabili", vm.classStudentsInput, vm.classNameInput);
       vm.classStudentsInput = "";
       vm.classNameInput = "";
-      console.log("Variabili", vm.classStudentsInput, vm.classNameInput)
-    })
+      console.log("Variabili", vm.classStudentsInput, vm.classNameInput);
+    });
   },
   methods: {
     saveClass: async function () {
       const vm = this;
       if (vm.classNameInput == null || vm.classNameInput == "") {
-        vm.errorClassText = "Il nome della classe non può essere vuoto!"
+        vm.errorClassText = "Il nome della classe non può essere vuoto!";
         $("#errorClass").fadeIn(1000);
         return;
       }
       if (vm.classStudentsInput == null || vm.classStudentsInput == "") {
-        vm.errorClassText = "Almeno uno studente deve essere presente nella classe!"
+        vm.errorClassText =
+          "Almeno uno studente deve essere presente nella classe!";
         $("#errorClass").fadeIn(1000);
         return;
       }
       let err = await insertClass(vm.classNameInput, vm.classStudentsInput);
       console.log("Inserisci Classe", err);
       if (err == -1) {
-        vm.errorClassText = "Errore durante l'aggiunta della classe! Classe già esistente!";
+        vm.errorClassText =
+          "Errore durante l'aggiunta della classe! Classe già esistente!";
         $("#errorClass").fadeIn(1000);
         return;
       }
-      
+
       $("#newClassModal").modal("hide");
       $("#classCreatedAlert").fadeIn(1000);
-      
     },
     closeAlert(id) {
       $(id).fadeOut(1000);
-    }
-  }
+    },
+  },
 });
 </script>
 

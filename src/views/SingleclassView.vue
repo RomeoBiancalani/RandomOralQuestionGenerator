@@ -1,7 +1,5 @@
 <template lang="it">
-
     <div class="d-flex align-items-baseline" >
-    
         <div class="container-list">
             <div class="card text-bg-light mb-3" style="width: 25rem;">
                 <div class="card-header"><strong>Elenco studenti</strong></div> 
@@ -16,7 +14,6 @@
                 </div>
             </div>
         </div>
-
         <div class="align-items-center" style="padding-left:200px;"> 
             <!--seleziona se chiamare random o specifico studente-->
             <div class="container-callbuttons">
@@ -25,7 +22,6 @@
                     <button @click="selectStudent()" class="btn btn-info btn-lg" type="button">Seleziona uno studente da chiamare</button>
                 </div>
             </div>
-            
             <div class="d-flex" v-if = "showRandomCard" >
                 <div class="container-randomnumber justify-content-end">
                     <div class="card text-bg-light border-primary mb-3" style="width: 25rem;height: 20rem;">
@@ -46,7 +42,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="container-testchoicebuttons">
                     <br><br>
                     <div class="d-grid gap-3 col-20">
@@ -56,7 +51,6 @@
                     </div>
                 </div>
             </div>  
-            
             <br>
             <div class="container-notTested" v-if = "showNotTestedList">
                 <div class="list-group notTestedList justify-content-end">
@@ -67,164 +61,148 @@
                         {{student}}
                     </button>
                 </div>
-
                 <div class="testedMessage" v-if = "showCalledMessage">
                     <div class="card text-bg-info mb-3" style="max-width: 18rem;">
                         <div class="card-body">
                             Studente chiamato!
                         </div>
                     </div>
-                    
                 </div>
-                
             </div>
         </div>
-
-
-       
     </div>
-
 </template>
 
-<script>    
-
+<script>
 import { defineComponent } from "vue";
-import Classes from "@/components/Classes.vue";
 import localforage from "localforage";
 
 export default {
-    data() {
-        return {
-            randomNumber: null,
-            studentsList: [],
-            studentsNumber: 0,
-            alreadyTested: [],
-            showRandomCard: false,
-            showRandomNumber: true,
-            showNotTestedList: false,
-            showCalledMessage: false
+  data() {
+    return {
+      randomNumber: null,
+      studentsList: [],
+      studentsNumber: 0,
+      alreadyTested: [],
+      showRandomCard: false,
+      showRandomNumber: true,
+      showNotTestedList: false,
+      showCalledMessage: false,
+    };
+  },
+  mounted() {
+    //get lista studenti
+    localforage.getItem("students").then((studentsList) => {
+      this.studentsList = students;
+    });
+
+    //get numero studenti
+    localforage.getItem("questionedNumber").then((alreadyTested) => {
+      this.alreadyTested = questionedNumber;
+    });
+
+    localforage.getItem("questionedStudents").then((alreadyTested) => {
+      this.alreadyTested = questionedStudents;
+    });
+  },
+  methods: {
+    getRandomStudent() {
+      // genera studente da interrogare
+      let index = -1; // indice studente da chiamare
+      this.showRandomCard = true;
+      this.showRandomNumber = true;
+      this.showNotTestedList = false;
+      if (alreadyTested.length != studentsList.length) {
+        // se non sono stati interrogati tutti
+        while (alreadyTested.includes(index)) {
+          // ripete se trova uno studente che era gia' stato interrogato
+          index = Math.floor(Math.random() * studentsList.length); // random index
         }
+      } else {
+        alert("Tutti gli studenti di questa classe sono stati interrogati!"); //TODO: sistemare messaggio
+      }
+      // estrai studente
+      if (index != -1) {
+        this.randomNumber = index;
+        let student = studentsList[index];
+        console.log(student); //TODO: visualizzare nome studente
+      }
+      return randomNumber;
     },
-    mounted() {
-        //get lista studenti
-        localforage.getItem('students').then((studentsList) => {
-            this.studentsList = students
-        })
 
-        //get numero studenti
-        localforage.getItem('questionedNumber').then((alreadyTested) => {
-            this.alreadyTested = questionedNumber
-        })
-
-        localforage.getItem('questionedStudents').then((alreadyTested) => {
-            this.alreadyTested = questionedStudents
-        })
+    addToTested() {
+      //aggiunge uno studente alla lista di chi e' gia' stato interrogato
+      alreadyTested.push(index); //update
+      localforage.setItem("questionedStudents", this.alreadyTested);
     },
-    methods: {
 
-        getRandomStudent() { // genera studente da interrogare
-            let index = -1; // indice studente da chiamare
-            this.showRandomCard = true;
-            this.showRandomNumber = true;
-            this.showNotTestedList = false;
-            if(alreadyTested.length != studentsList.length){ // se non sono stati interrogati tutti
-                while(alreadyTested.includes(index)){ // ripete se trova uno studente che era gia' stato interrogato
-                    index = Math.floor(Math.random() * studentsList.length); // random index
-                }
-            }
-            else{
-                alert("Tutti gli studenti di questa classe sono stati interrogati!"); //TODO: sistemare messaggio
-            }
-            // estrai studente
-            if(index != -1){
-                this.randomNumber = index;
-                let student = studentsList[index];
-                console.log(student); //TODO: visualizzare nome studente
-            }
-            return randomNumber
-            
-        },
-
-        
-        addToTested() { //aggiunge uno studente alla lista di chi e' gia' stato interrogato
-            alreadyTested.push(index); //update
-            localforage.setItem('questionedStudents', this.alreadyTested);
-        },
-
-
-        //funzioni per selezionare uno studente specifico da interrogare
-        selectStudent() { //se si sceglie di non chiamare a caso
-            this.showRandomCard = false; //non far vedere la card per generare random
-            this.showNotTestedList = true; //display lista persone da interrogare
-        }
-
-        
-    }
-}
+    //funzioni per selezionare uno studente specifico da interrogare
+    selectStudent() {
+      //se si sceglie di non chiamare a caso
+      this.showRandomCard = false; //non far vedere la card per generare random
+      this.showNotTestedList = true; //display lista persone da interrogare
+    },
+  },
+};
 </script>
 
-
 <style lang="scss" scoped>
+.container {
+  padding: 25px;
+}
+.d-flex {
+  align-items: center; // Centra in altezza
+}
 
-    .container{
-        padding: 25px;
-    }
-    .d-flex {
-      
-        align-items: center; // Centra in altezza
-    }
- 
-    .container-list { //contiene lista studenti
-        font-size: 20px;
-        text-align: left;
-        padding: 25px;
-    }
+.container-list {
+  //contiene lista studenti
+  font-size: 20px;
+  text-align: left;
+  padding: 25px;
+}
 
-    .card-header{
-        text-align: center;
-        font-size: 25px;
-    }
+.card-header {
+  text-align: center;
+  font-size: 25px;
+}
 
-    .list-group-flush{ //setta lo spazio tra le righe della card
-        line-height: 2;
-    }
+.list-group-flush {
+  //setta lo spazio tra le righe della card
+  line-height: 2;
+}
 
-    .container-randomnumber{ //contiene card num random
-       
-       padding-top: 50px;
-    }
+.container-randomnumber {
+  //contiene card num random
 
-    .container-testchoicebuttons { //contiene opzioni se interrogare, non interrogare o uscire
-        text-align: center;
-        padding-left: 100px;
-    }
+  padding-top: 50px;
+}
 
-    .container-callbuttons { //contiene opzioni se chiamare random o no
-        align-items: center;
-        display:flex;
-       
-    }
-    
+.container-testchoicebuttons {
+  //contiene opzioni se interrogare, non interrogare o uscire
+  text-align: center;
+  padding-left: 100px;
+}
 
-    .container-notTested { //contiene lista studenti non ancora interrogati
-        font-size: 20px;
-        text-align: left;
-        padding-top: 25px;
-        display: flex;
-        align-items: center;
-    }
+.container-callbuttons {
+  //contiene opzioni se chiamare random o no
+  align-items: center;
+  display: flex;
+}
 
-    .notTestedList {
-        width: 25rem;
-    }
+.container-notTested {
+  //contiene lista studenti non ancora interrogati
+  font-size: 20px;
+  text-align: left;
+  padding-top: 25px;
+  display: flex;
+  align-items: center;
+}
 
-    .testedMessage {
-        padding-left: 100px;
-    }
+.notTestedList {
+  width: 25rem;
+}
 
-    
-
-   
-
-    
+.testedMessage {
+  padding-left: 100px;
+}
 </style>

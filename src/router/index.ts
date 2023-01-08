@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ClassesView from '../views/ClassesView.vue'
-import DefaultLayout from '../layout/DefaultLayout.vue'
-import SingleclassView from '../views/SingleclassView.vue'
-import localforage from 'localforage'
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import ClassesView from "../views/ClassesView.vue";
+import DefaultLayout from "../layout/DefaultLayout.vue";
+import SingleclassView from "../views/SingleclassView.vue";
+import localforage from "localforage";
 
 /*
 
@@ -18,62 +18,62 @@ Meta:
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: DefaultLayout,
     children: [
       {
-        path: '', component: HomeView
-      }
-    ]
+        path: "",
+        component: HomeView,
+      },
+    ],
   },
   {
-    path: '/classi',
-    name: 'Classes',
+    path: "/classi",
+    name: "Classes",
     component: DefaultLayout,
     children: [
       {
-        path: '', component: ClassesView
-      }
+        path: "",
+        component: ClassesView,
+      },
     ],
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
     },
   },
 
   {
-    path: '/singleclass',
-    name: 'SingleClass',
+    path: "/singleclass",
+    name: "SingleClass",
     component: DefaultLayout,
     children: [
       {
-        path: '', component: SingleclassView
-      }
-    ]
-  }
-]
+        path: "",
+        component: SingleclassView,
+      },
+    ],
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     // Controllo l'autenticazione controllando se globalName e' impostato
     localforage.getItem("globalName").then((value) => {
       if (value == null) {
-        next({path: "/"});
-      }
-      else {
+        next({ path: "/" });
+      } else {
         next();
       }
     });
-  
-  }
-  else {
+  } else {
     next();
   }
 });
 
-export default router
+export default router;

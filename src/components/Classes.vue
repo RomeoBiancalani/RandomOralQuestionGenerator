@@ -10,9 +10,12 @@
           <div
             class="progress"
             role="progressbar"
-            style="height: 2px; margin:2px; margin-bottom:5px"
+            style="height: 2px; margin: 2px; margin-bottom: 5px"
           >
-            <div class="progress-bar bg-secondary" :style="'width: ' + item.questionedPercent + '%'"></div>
+            <div
+              class="progress-bar bg-secondary"
+              :style="'width: ' + item.questionedPercent + '%'"
+            ></div>
           </div>
 
           {{ item.name }}
@@ -24,8 +27,13 @@
         </p>
         <div class="buttons">
           <div class="btn-group float-right">
-            <a href="#" class="btn btn-primary"><font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" /> Entra</a>
-            <a href="#" class="btn btn-info"><font-awesome-icon icon="fa-trash" /> Elimina</a>
+            <a href="#" class="btn btn-primary"
+              ><font-awesome-icon icon="fa-solid fa-arrow-right-to-bracket" />
+              Entra</a
+            >
+            <a href="#" class="btn btn-info"
+              ><font-awesome-icon icon="fa-trash" /> Elimina</a
+            >
           </div>
         </div>
       </div>
@@ -51,11 +59,11 @@ export default {
     ];
 
     classes.forEach((el) => {
-        el.questionedPercent = (el.studentsQuestioned/el.studentsNumber) * 100;
+      el.questionedPercent = (el.studentsQuestioned / el.studentsNumber) * 100;
     });
 
     return {
-        classes
+      classes,
     };
   },
 };
