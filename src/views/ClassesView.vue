@@ -34,7 +34,10 @@
         </div>
       </div>
     </div>
-    <classes />
+    <!-- TODO: Studiare che cosa e' suspence -->
+    <suspense>
+      <classes />
+    </suspense>
 
     <!-- Modal Nuova classe -->
     <div
@@ -141,6 +144,7 @@ export default defineComponent({
       classStudentsInput: "",
       classNameInput: "",
       errorClassText: ref(""),
+      classesList: ref([]),
     };
   },
   mounted() {

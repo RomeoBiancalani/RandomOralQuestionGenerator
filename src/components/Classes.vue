@@ -42,21 +42,34 @@
 </template>
 
 <script>
+import localforage from "localforage";
+
 export default {
   name: "Classes",
-  setup() {
-    let classes = [
-      {
-        name: "4H",
-        studentsNumber: 25,
-        studentsQuestioned: 16,
-      },
-      {
-        name: "4Q",
-        studentsNumber: 22,
-        studentsQuestioned: 10,
-      },
-    ];
+  async setup() {
+    // let classes = [
+    //   {
+    //     name: "4H",
+    //     studentsNumber: 25,
+    //     studentsQuestioned: 16,
+    //   },
+    //   {
+    //     name: "4Q",
+    //     studentsNumber: 22,
+    //     studentsQuestioned: 10,
+    //   },
+    // ];
+    let classes = [];
+    try {
+      const value = await localforage.getItem("classes");
+      // This code runs once the value has been loaded
+      // from the offline store.
+      console.log(value);
+      classes = value;
+    } catch (err) {
+      // This code runs if there were any errors.
+      console.log(err);
+    }
 
     classes.forEach((el) => {
       el.questionedPercent = (el.studentsQuestioned / el.studentsNumber) * 100;
@@ -65,6 +78,15 @@ export default {
     return {
       classes,
     };
+  },
+  mounted() {
+    localforage.getItem("classes", function (err, value) {
+      if (value == undefined) {
+        vm.classesList = [];
+      } else {
+        vm.classesList = value;
+      }
+    });
   },
 };
 </script>

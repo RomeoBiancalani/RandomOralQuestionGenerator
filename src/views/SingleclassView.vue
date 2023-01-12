@@ -1,63 +1,42 @@
 <template lang="it">
-    <div class="d-flex align-items-baseline" >
+  <div class="container-fluid text-center">
+    <!-- row-cols-md-3 row-cols-1 -->
+    <div class="row"> 
+      <div class="col">
         <div class="container-list">
-            <div class="card text-bg-light mb-3" style="width: 25rem;">
-                <div class="card-header"><strong>Elenco studenti</strong></div> 
-                <div class="card-body">
-                    <p class="d-flex">
-                        <ol class="list-group-flush text-bg-light mb-3">
-                            <li v-for="student in studentsList" :key="student">
-                                {{student}}
-                            </li>   
-                        </ol>
-                    </p>
+                <div class="list-group notTestedList">
+                    <li class="list-group-item list-group-item-primary">Lista Studenti</li>
+                    <li
+                      class="list-group-item" 
+                      v-for="(student, index) in studentsList" 
+                      :key="index"
+                    >
+                    <span class="nomeStudente">
+                      {{index}}) {{student}}
+                    </span>
+                        <span class="float-end">
+                          <span class="icon-action" @click="editStudent(index)">
+                            <font-awesome-icon icon="fa-solid fa-user-pen" />
+                          </span>
+                          <span>
+                            <font-awesome-icon icon="fa-solid fa-trash" />
+                          </span>
+                        </span>
+                    </li>
                 </div>
             </div>
-        </div>
-        <div class="align-items-center" style="padding-left:200px;"> 
-            <!--seleziona se chiamare random o specifico studente-->
-            <div class="container-callbuttons">
-                <div class="d-grid gap-3 col-30 ">
-                    <button @click="getRandomStudent()" class="btn btn-primary btn-lg" type="button" >Chiama uno studente random</button>
-                    <button @click="selectStudent()" class="btn btn-info btn-lg" type="button">Seleziona uno studente da chiamare</button>
-                </div>
-            </div>
-            <div class="d-flex" v-if = "showRandomCard" >
-                <div class="container-randomnumber justify-content-end">
-                    <div class="card text-bg-light border-primary mb-3" style="width: 25rem;height: 20rem;">
-                        <div class="card-body">
-                            <br>
-                            <!-- Display titolo -->
-                            <h3 class="card-title text-primary"><u><strong>Studente estratto:</strong></u></h3>
-                            <br>
-                            
-                            <!-- Display num random -->
-                            <div class="card border-primary mb-3 mx-auto" style="width: 10rem; height: 10rem;">
-                                <div class="card-body d-flex justify-content-center">
-                                    <br>
-                                    <div class="card-text text-center" v-if = "showRandomNumber" style="font-size: 36px;">{{ randomNumber }}</div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="container-testchoicebuttons">
-                    <br><br>
-                    <div class="d-grid gap-3 col-20">
-                        <button @click="addToTested()" class="btn btn-success btn-lg" type="button">Interroga oggi</button>
-                        <button @click="this.showRandomNumber = false" class="btn btn-info btn-lg" type="button">Non chiamare per oggi</button> <!-- clear card random number -->
-                        <button @click="this.showRandomCard = false" class="btn btn-danger btn-lg" type="button">Esci</button>
-                    </div>
-                </div>
-            </div>  
-            <br>
-            <div class="container-notTested" v-if = "showNotTestedList">
+      </div>
+      <div class="col-6">
+        2
+      </div>
+      <div class="col">
+        <div class="container-notTested" v-if="showNotTestedList">
                 <div class="list-group notTestedList justify-content-end">
-                    <button type="button" class="list-group-item list-group-item-action disabled" aria-disabled="true" style="background-color: #FDD231; color: #0C163D; text-align: center">
+                    <button type="button" class="list-group-item list-group-item-action disabled" aria-disabled="true" 
+                    style="background-color: #FDD231; text-align: center">
                         <strong>Studenti non interrogati</strong>
                     </button>
-                    <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="student in studentsList" :key="student">
+                    <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="student in 20" :key="student">
                         {{student}}
                     </button>
                 </div>
@@ -69,8 +48,55 @@
                     </div>
                 </div>
             </div>
-        </div>
+      </div>
     </div>
+
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="editStudentModal"
+      tabindex="-1"
+      aria-hidden="true"
+      aria-labelledby="editStudentModalLabel"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editStudentModalLabel">
+              Modifica {{nomeStudente}}
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-left">
+            <div class="mb-3">
+              <label for="className" class="form-label">Nuovo Nome</label>
+              <input
+                type="text"
+                class="form-control"
+                id="className"
+                placeholder="Cognome Nome"
+                v-model="studentNameInput"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-bs-dismiss="modal">
+              Annulla
+            </button>
+            <button type="button" class="btn btn-primary" @click="saveStudent(indexStudente)">
+              Salva
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -80,14 +106,18 @@ import localforage from "localforage";
 export default {
   data() {
     return {
-      randomNumber: null,
-      studentsList: [],
-      studentsNumber: 0,
-      alreadyTested: [],
-      showRandomCard: false,
-      showRandomNumber: true,
-      showNotTestedList: false,
-      showCalledMessage: false,
+      studentsList: [
+        "Romeo Biancalani",
+        "Diocane 1",
+        "Diocane 2",
+        "Diocane 3",
+        "Diocane 4",
+        "Diocane 5",
+        "Diocane 6",
+      ],
+      nomeStudente: "",
+      indexStudente: 0,
+      studentNameInput: "",
     };
   },
   mounted() {
@@ -130,35 +160,50 @@ export default {
       return randomNumber;
     },
 
-    addToTested() {
-      //aggiunge uno studente alla lista di chi e' gia' stato interrogato
-      alreadyTested.push(index); //update
-      localforage.setItem("questionedStudents", this.alreadyTested);
+    editStudent(index) {
+      this.nomeStudente = this.studentsList[index];
+      this.indexStudente = index;
+      this.studentNameInput = "";
+      $("#editStudentModal").modal("show");
     },
 
-    //funzioni per selezionare uno studente specifico da interrogare
-    selectStudent() {
-      //se si sceglie di non chiamare a caso
-      this.showRandomCard = false; //non far vedere la card per generare random
-      this.showNotTestedList = true; //display lista persone da interrogare
+    saveStudent(index) {
+      //TODO: Salvataggio nel db
+      this.studentsList[index] = this.studentNameInput;
+      $("#editStudentModal").modal("hide");
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.container {
-  padding: 25px;
+.row {
+  margin-top: 20px;
 }
+// .container {
+//   padding: 25px;
+// }
 .d-flex {
   align-items: center; // Centra in altezza
 }
 
 .container-list {
-  //contiene lista studenti
-  font-size: 20px;
-  text-align: left;
-  padding: 25px;
+  width: 100%;
+  .list-group-item {
+    text-align: left;
+
+    .nomeStudente {
+      height: 100%;
+      width: auto;
+    }
+
+    .icon-action {
+      margin-right: 7px;
+    }
+  }
+  .list-group-item-primary {
+    text-align: center;
+  }
 }
 
 .card-header {
@@ -196,10 +241,6 @@ export default {
   padding-top: 25px;
   display: flex;
   align-items: center;
-}
-
-.notTestedList {
-  width: 25rem;
 }
 
 .testedMessage {
