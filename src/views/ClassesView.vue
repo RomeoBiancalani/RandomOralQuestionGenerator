@@ -36,7 +36,7 @@
     </div>
     <!-- TODO: Studiare che cosa e' suspence -->
     <suspense>
-      <classes />
+      <classes :classes="classesList"/>
     </suspense>
 
     <!-- Modal Nuova classe -->
@@ -139,12 +139,24 @@ export default defineComponent({
     Classes,
   },
   setup() {
+    let classes = ref([]);
+    // Get Lista classi
+    localforage.getItem("classes").then((value, error) => {
+      console.log("Classi", value, error);
+      classes.value = value;
+      classes.value.forEach((el) => {
+        el.questionedPercent = (el.studentsQuestioned / el.studentsNumber) * 100;
+      });
+    });
+
+
+
     return {
       name: ref(""),
       classStudentsInput: "",
       classNameInput: "",
       errorClassText: ref(""),
-      classesList: ref([]),
+      classesList: classes,
     };
   },
   mounted() {
@@ -187,11 +199,18 @@ export default defineComponent({
 
       $("#newClassModal").modal("hide");
       $("#classCreatedAlert").fadeIn(1000);
+
+      // Aggiungo la classe allo schermo
+      vm.classesList = await getAllClasses();
     },
     closeAlert(id) {
       $(id).fadeOut(1000);
     },
+    
   },
+  watch: {
+
+  }
 });
 </script>
 

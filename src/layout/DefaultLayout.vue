@@ -47,6 +47,10 @@ export default defineComponent({
           name: "Classi",
           path: "/classi",
         },
+        {
+          name: "Aiuto",
+          path: "/help",
+        },
       ],
     };
   },
