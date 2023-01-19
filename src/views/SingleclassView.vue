@@ -12,7 +12,7 @@
                       :key="index"
                     >
                     <span class="nomeStudente">
-                      {{index}}) {{student}}
+                      {{index+1}}) {{student}}
                     </span>
                         <span class="float-end">
                           <span class="icon-action" @click="editStudent(index)">
@@ -27,7 +27,44 @@
             </div>
       </div>
       <div class="col-6">
-        2
+        <div class="container-callbuttons">
+                <div class="d-grid gap-3 col-30 ">
+                    <button @click="getRandomStudent()" class="btn btn-primary btn-lg" type="button" >Chiama uno studente random</button>
+                    <button @click="selectStudent()" class="btn btn-info btn-lg" type="button">Seleziona uno studente da chiamare</button>
+                </div>
+            </div>
+            <div class="d-flex" v-if = "showRandomCard" >
+                <div class="container-randomnumber justify-content-end">
+                    <div class="card text-bg-light border-primary mb-3" style="width: 25rem;height: 20rem;">
+                        <div class="card-body">
+                            <br>
+                            <!-- Display titolo -->
+                            <h3 class="card-title text-primary"><u><strong>Studente estratto:</strong></u></h3>
+                            <br>
+                            
+                            <!-- Display num random -->
+                            <div class="card border-primary mb-3 mx-auto" style="width: 10rem; height: 10rem;">
+                                <div class="card-body d-flex justify-content-center">
+                                    <br>
+                                    <div class="card-text text-center" v-if = "showRandomNumber" style="font-size: 36px;">
+                                      {{ randomNumber + 1}}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ calledStudent }}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="container-testchoicebuttons">
+                    <br><br>
+                    <div class="d-grid gap-3 col-20">
+                        <button @click="addToTested()" class="btn btn-success btn-lg" type="button">Interroga oggi</button>
+                        <button @click="this.showRandomNumber = false" class="btn btn-info btn-lg" type="button">Non chiamare per oggi</button> <!-- clear card random number -->
+                        <button @click="this.showRandomCard = false" class="btn btn-danger btn-lg" type="button">Esci</button>
+                    </div>
+                </div>
+            </div>  
       </div>
       <div class="col">
         <div class="container-notTested" v-if="showNotTestedList">
@@ -36,8 +73,8 @@
                     style="background-color: #FDD231; text-align: center">
                         <strong>Studenti non interrogati</strong>
                     </button>
-                    <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="student in 20" :key="student">
-                        {{student}}
+                    <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="student in alreadyTested" :key="student">
+                        {{ studentsList[student]}}
                     </button>
                 </div>
                 <div class="testedMessage" v-if = "showCalledMessage">
@@ -106,60 +143,36 @@ import localforage from "localforage";
 export default {
   data() {
     return {
-      studentsList: [
-        "Romeo Biancalani",
-        "Diocane 1",
-        "Diocane 2",
-        "Diocane 3",
-        "Diocane 4",
-        "Diocane 5",
-        "Diocane 6",
-      ],
+      randomNumber: 0,
+      studentsList: ["stud 1", "stud 2","stud 3"],
+      studentsNumber: 0,
+      alreadyTested: [0],
+      showRandomCard: false, //visualizza card num random
+      showRandomNumber: true, //visualizza num random
+      showNotTestedList: false, //visualizza lista studenti non interrogati
+      showCalledMessage: false, //visualizza il messaggio di chiamata
       nomeStudente: "",
       indexStudente: 0,
       studentNameInput: "",
+      calledStudent: "", //visualizza nome studente chiamato
     };
   },
-  mounted() {
+  //TODO: correggere il ricavo dati dal db
+  mounted() { //nota: ho commentato il codice perche' non c'e' la lista degli studenti gia' stati interrogati nel db
     //get lista studenti
-    localforage.getItem("students").then((studentsList) => {
-      this.studentsList = students;
+    localforage.getItem("classes").then((value) => {
+      // const classes = localforage.getItem("classes");
+      // const url = this.$route.path;
+      // const className = url.split("/").pop(); //ricavo il nome della classe corrente dall'url (da correggere)
+      // this.studentsList = value.find(c => c.name === className);
     });
+  
 
-    //get numero studenti
-    localforage.getItem("questionedNumber").then((alreadyTested) => {
-      this.alreadyTested = questionedNumber;
-    });
-
-    localforage.getItem("questionedStudents").then((alreadyTested) => {
-      this.alreadyTested = questionedStudents;
-    });
+    // localforage.getItem("questionedStudents").then((alreadyTested) => {
+    //   this.alreadyTested = questionedStudents;
+    // });
   },
   methods: {
-    getRandomStudent() {
-      // genera studente da interrogare
-      let index = -1; // indice studente da chiamare
-      this.showRandomCard = true;
-      this.showRandomNumber = true;
-      this.showNotTestedList = false;
-      if (alreadyTested.length != studentsList.length) {
-        // se non sono stati interrogati tutti
-        while (alreadyTested.includes(index)) {
-          // ripete se trova uno studente che era gia' stato interrogato
-          index = Math.floor(Math.random() * studentsList.length); // random index
-        }
-      } else {
-        alert("Tutti gli studenti di questa classe sono stati interrogati!"); //TODO: sistemare messaggio
-      }
-      // estrai studente
-      if (index != -1) {
-        this.randomNumber = index;
-        let student = studentsList[index];
-        console.log(student); //TODO: visualizzare nome studente
-      }
-      return randomNumber;
-    },
-
     editStudent(index) {
       this.nomeStudente = this.studentsList[index];
       this.indexStudente = index;
@@ -172,6 +185,44 @@ export default {
       this.studentsList[index] = this.studentNameInput;
       $("#editStudentModal").modal("hide");
     },
+
+
+    getRandomStudent() {
+      // genera studente da interrogare
+      let index = -1; // indice studente da chiamare
+      this.showRandomCard = true;
+      this.showRandomNumber = true;
+      this.showNotTestedList = false;
+    
+      if (this.alreadyTested.length != this.studentsList.length) {
+        // se non sono stati interrogati tutti
+        do {
+          index = Math.floor(Math.random() * (this.studentsList.length-1)); // random index
+        } while(this.alreadyTested.includes(index)); // ripete se trova uno studente che era gia' stato interrogato
+     } else {
+       alert("Tutti gli studenti di questa classe sono stati interrogati!"); //TODO: sistema alert
+      }
+      // estrai studente
+      if (index != -1) {
+        this.calledStudent = this.studentsList[index]; //setta il nome dello studente chiamato per visualizzarlo
+      }
+      this.randomNumber = index;
+    },
+    
+
+    //TODO: da sistemare, ancora non ho la lista degli studenti gia' interrogati nel db
+    addToTested() { 
+      //aggiunge uno studente alla lista di chi e' gia' stato interrogato
+      alreadyTested.push(index); //update
+      localforage.setItem("questionedStudents", this.alreadyTested);
+    },
+    //funzioni per selezionare uno studente specifico da interrogare
+    selectStudent() {
+      //se si sceglie di non chiamare a caso
+      this.showRandomCard = false; //non far vedere la card per generare random
+      this.showNotTestedList = true; //display lista persone da interrogare
+    },
+
   },
 };
 </script>
