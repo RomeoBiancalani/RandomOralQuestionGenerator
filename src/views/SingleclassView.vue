@@ -5,7 +5,7 @@
       <div class="col">
         <div class="container-list">
             <div class="list-group">
-                <li class="list-group-item list-group-item-primary">Lista Studenti</li>
+                <li class="list-group-item list-group-item-primary">Lista studenti</li>
                 <li
                   class="list-group-item" 
                   v-for="(student, index) in studentsList" 
@@ -34,16 +34,24 @@
                 <button @click="selectStudent()" class="btn btn-info btn-lg" type="button">Seleziona uno studente da chiamare</button>
             </div>
         </div>
-        <div class="container-callbuttons" v-if = "showCalledMessage">
-          <div class="alert alert-success d-flex "  role="alert" style="margin-top: 200px; width: 25rem">
-             
-            <span><font-awesome-icon icon="fa-solid fa-circle-check" /></span>  
-            <div class="mx-auto" style="font-size:20px">Studente chiamato!</div>   
+
+        <div id="studentCalledAlert" class="container-callbuttons" v-if = "showCalledMessage">
+          <div class="d-grid gap-6 col-30">
+            <div><br><br><br><br></div>
+            <div class="alert alert-success alert-dismissible d-flex" role="alert" > 
+              <span class="float-end"><font-awesome-icon icon="fa-solid fa-circle-check" /></span>
+              <div style="font-size:20px; text-align:right; margin-left: 10px">
+                Studente chiamato!
+                <button
+                  type="button"
+                  class="btn-close"
+                  @click="closeAlert('#studentCalledAlert')"
+                  aria-label="Close"
+                ></button> 
+              </div>  
+            </div>
           </div>
         </div>
-        
-
-        
                 
         <div class="d-flex" v-if = "showRandomCard" >
             <div class="container-randomnumber justify-content-end">
@@ -80,23 +88,30 @@
                     <button @click="this.showRandomCard = false; this.showCalledMessageRandom = false" class="btn btn-danger btn-lg" type="button">Esci</button>
                 </div>
             </div>
-        </div>  
-       
-       
-               
+        </div>       
       </div>
+
+
       <div class="col">
-        <div class="container-testchoicebuttons">
-          <br><br>
-          <div class="alert alert-success d-flex"   v-if = "showCalledMessageRandom" role="alert"> 
-            <span><font-awesome-icon icon="fa-solid fa-circle-check" /></span>  
-            <div class="mx-auto" style="font-size:20px">Studente chiamato!</div>   
+        <div id="studentCalledAlert" class="container-testchoicebuttons d-flex" v-if = "showCalledMessageRandom" >
+
+          <div class="alert alert-success alert-dismissible d-flex" role="alert"> 
+            <span classe="float-end"><font-awesome-icon icon="fa-solid fa-circle-check" /></span>
+            
+            <div style="font-size:20px; text-align:right; margin-left: 10px">
+              Studente chiamato!
+              <button
+                type="button"
+                class="btn-close"
+                @click="closeAlert('#studentCalledAlert')"
+                aria-label="Close"
+              ></button> 
+            </div>  
           </div>
         </div>
-    
-        <div class="container-list">
+        <div class="container-list d-flex">
           <div class="list-group notTestedList" v-if="showNotTestedList">
-            <div class="list-group-item list-group-item-info justidy-content-end">Lista studenti non interrogati</div>
+            <div class="list-group-item list-group-item-info">Lista studenti non interrogati</div>
             <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="index in alreadyTested" :key="index">
               <span class="nomeStudente">
                 {{ index+1 }}) {{ studentsList[index] }}
@@ -108,7 +123,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!-- Modal to edit a student-->
     <div
       class="modal fade"
       id="editStudentModal"
@@ -153,6 +168,33 @@
       </div>
     </div>
   </div>
+
+
+
+  <!-- Modal to alert evertbody has been tested-->
+  <div
+    class="modal fade"
+    id="everybodyTestedModal"
+    tabindex="-1"
+    aria-hidden="true"
+    aria-labelledby="everybodyTestedModalLabel"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        
+        <div class="modal-body text-left">
+          Tutti gli studenti di questa classe sono gia' stati interrogati!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            OK
+          </button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </template>
 
 <script>
@@ -163,15 +205,15 @@ export default {
   data() {
     return {
       randomNumber: 0,
-      studentsList: ["stud 1", "stud 2","stud 3"],
+      studentsList: ["stud 1", "stud 2","stud 3","stud 4","stud 1", "stud 2","stud 3","stud 1", "stud 2","stud 3","stud 1", "stud 2","stud 3"],
       studentsNumber: 0,
-      alreadyTested: [],
+      alreadyTested: [0,1,2,3,4,5,6,7,8,9,10],
       showRandomCard: false, //visualizza card num random
       showRandomNumber: true, //visualizza num random
       showNotTestedList: false, //visualizza lista studenti non interrogati
       showCalledMessage: false, //visualizza il messaggio di chiamata
       showCalledMessageRandom: false, //viene visualizzato quando viene interrogato lo studente random
-      showEverybodyTestedAlert: false,
+   
       nomeStudente: "",
       indexStudente: 0,
       studentNameInput: "",
@@ -208,6 +250,13 @@ export default {
       $("#editStudentModal").modal("hide");
     },
 
+    showEverybodyTested() {
+      $("#everybodyTestedModal").modal("show"); 
+    },
+
+    closeAlert(id) {
+      $(id).fadeOut(1000);
+    },
 
     getRandomStudent() {
       // genera studente da interrogare
@@ -217,16 +266,16 @@ export default {
       this.showNotTestedList = false;
       this.showCalledMessage = false;
       this.showCalledMessageRandom = false;
-      
+     
     
       if (this.alreadyTested.length != this.studentsList.length) {
         // se non sono stati interrogati tutti
         do {
-          index = Math.floor(Math.random() * (this.studentsList.length-1)); // random index
+          index = Math.floor(Math.random() * (this.studentsList.length)); // random index
         } while(this.alreadyTested.includes(index)); // ripete se trova uno studente che era gia' stato interrogato
       } else {
-        alert("Tutti gli studenti di questa classe sono stati interrogati!"); //TODO: sistema alert
-        this.showEverybodyTestedAlert = true;
+        // TODO: show model
+        this.showEverybodyTested();
         
       }
       // estrai studente
@@ -286,24 +335,8 @@ export default {
   }
 }
 
-
-
-
-
-
-.card-header {
-  text-align: center;
-  font-size: 25px;
-}
-
-.list-group-flush {
-  //setta lo spazio tra le righe della card
-  line-height: 2;
-}
-
 .container-randomnumber {
   //contiene card num random
-
   padding-top: 50px;
   margin-left:200px;
 }
@@ -321,9 +354,4 @@ export default {
   margin-left:200px;
 }
 
-
-
-.testedMessage {
-  padding-left: 100px;
-}
 </style>
