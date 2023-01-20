@@ -3,7 +3,7 @@
     <!-- row-cols-md-3 row-cols-1 -->
     <div class="row"> 
       <div class="col">
-        <div class="container-list">
+        <div id="allStudentsList" class="container-list">
             <div class="list-group">
                 <li class="list-group-item list-group-item-primary">Lista studenti</li>
                 <li
@@ -28,7 +28,7 @@
       </div>
 
       <div class="col-6">
-        <div class="container-callbuttons">
+        <div id="callModalityChoice" class="container-callbuttons">
             <div class="d-grid gap-3 col-30 ">
                 <button @click="getRandomStudent()" class="btn btn-primary btn-lg" type="button" >Chiama uno studente random</button>
                 <button @click="selectStudent()" class="btn btn-info btn-lg" type="button">Seleziona uno studente da chiamare</button>
@@ -53,8 +53,8 @@
           </div>
         </div>
                 
-        <div class="d-flex" v-if = "showRandomCard" >
-            <div class="container-randomnumber justify-content-end">
+        <div id="randomCard" class="d-flex" v-if = "showRandomCard" >
+            <div id="randomNumber" class="container-randomnumber justify-content-end">
                 <div class="card text-bg-light border-primary mb-3" style="width: 25rem;height: 20rem;">
                     <div class="card-body">
                         <br>
@@ -80,7 +80,7 @@
               
             </div>
            
-            <div class="container-testchoicebuttons">
+            <div id="testchoice" class="container-testchoicebuttons">
                 <br><br>
                 <div class="d-grid gap-3 col-20">
                     <button @click="this.showCalledMessageRandom = true; addToTested()" class="btn btn-success btn-lg" type="button">Interroga oggi</button>
@@ -109,7 +109,7 @@
             </div>  
           </div>
         </div>
-        <div class="container-list d-flex">
+        <div id="notTestedStudents" class="container-list d-flex">
           <div class="list-group notTestedList" v-if="showNotTestedList">
             <div class="list-group-item list-group-item-info">Lista studenti non interrogati</div>
             <button @click="showCalledMessage = true, addToTested()" type="button" class="list-group-item list-group-item-action" v-for="index in alreadyTested" :key="index">
@@ -181,15 +181,17 @@
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        
-        <div class="modal-body text-left">
-          Tutti gli studenti di questa classe sono gia' stati interrogati!
+        <div class="modal-header text-center"> <strong>Tutti gli studenti di questa classe sono gia' stati interrogati!</strong></div>
+        <div class="modal-body text-center">
+          Vuoi <strong>cancellare</strong> la lista degli interrogati e riniziare le interrogazioni?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-            OK
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="clearAlreadyTested()">
+            Si
           </button>
-          
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            No
+          </button>
         </div>
       </div>
     </div>
@@ -205,9 +207,9 @@ export default {
   data() {
     return {
       randomNumber: 0,
-      studentsList: ["stud 1", "stud 2","stud 3","stud 4","stud 1", "stud 2","stud 3","stud 1", "stud 2","stud 3","stud 1", "stud 2","stud 3"],
+      studentsList: ["stud 1", "stud 2"],
       studentsNumber: 0,
-      alreadyTested: [0,1,2,3,4,5,6,7,8,9,10],
+      alreadyTested: [0,1],
       showRandomCard: false, //visualizza card num random
       showRandomNumber: true, //visualizza num random
       showNotTestedList: false, //visualizza lista studenti non interrogati
@@ -275,12 +277,16 @@ export default {
         } while(this.alreadyTested.includes(index)); // ripete se trova uno studente che era gia' stato interrogato
       } else {
         // TODO: show model
+        this.nomeStudente = "";
         this.showEverybodyTested();
         
       }
       // estrai studente
       if (index != -1) {
         this.calledStudent = this.studentsList[index]; //setta il nome dello studente chiamato per visualizzarlo
+      }
+      else{
+        this.nomeStudente = "";
       }
       this.randomNumber = index;
     },
@@ -289,18 +295,22 @@ export default {
     //TODO: da sistemare, ancora non ho la lista degli studenti gia' interrogati nel db
     addToTested() { 
       //aggiunge uno studente alla lista di chi e' gia' stato interrogato
-      alreadyTested.push(index); //update
-      localforage.setItem("questionedStudents", this.alreadyTested);
-      //show messaggio
-      
+      this.alreadyTested.push(this.randomNumber); //update
+      localforage.setItem("questionedStudents", this.alreadyTested); 
     },
-    //funzioni per selezionare uno studente specifico da interrogare
+
+    //funzione per selezionare uno studente specifico da interrogare
     selectStudent() {
       //se si sceglie di non chiamare a caso
       this.showRandomCard = false; //non far vedere la card per generare random
       this.showNotTestedList = true; //display lista persone da interrogare
       this.showCalledMessageRandom = false;
       
+    },
+
+    //resetta la lista degli studenti gia' interrogati
+    clearAlreadyTested(){
+      this.alreadyTested = [];
     },
 
   },
