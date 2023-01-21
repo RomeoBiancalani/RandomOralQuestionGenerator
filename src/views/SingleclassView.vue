@@ -2,7 +2,7 @@
   <div class="container-fluid text-center">
     <div class="row"> 
       <div class="col">
-        <div id="allStudentsList" class="container-list" aria-label="Elenco degli studenti della classe"> <!--tag accessibilita': aria-label-->
+        <div id="allStudentsList" class="container-list" aria-label="Elenco degli studenti della classe"> <!-- tag accessibilita': aria-label -->
             <div class="list-group">
                 <li class="list-group-item list-group-item-primary">Lista studenti</li>
                 <li
@@ -16,10 +16,10 @@
                 </span>
                     <span class="float-end">
                       <span class="icon-action" @click="editStudent(index)">
-                        <font-awesome-icon icon="fa-solid fa-user-pen" aria-label="Modifica studente"/> <!--tag accessibilita': aria-label-->
+                        <font-awesome-icon icon="fa-solid fa-user-pen" aria-label="Modifica studente"/> <!-- tag accessibilita': aria-label -->
                       </span>
-                      <span>
-                        <font-awesome-icon icon="fa-solid fa-trash" aria-label="Cancella studente dall'elenco"/> <!--tag accessibilita': aria-label-->
+                      <span class="icon-action" @click="deleteStudent(index)">
+                        <font-awesome-icon icon="fa-solid fa-trash" aria-label="Cancella studente dall'elenco"/> <!-- tag accessibilita': aria-label -->
                       </span>
                     </span>
                 </li>
@@ -37,7 +37,7 @@
                   aria-label="Estrai uno studente random" 
                 >
                   Estrai uno studente random
-                </button> <!--tag accessibilita': aria-label-->
+                </button> <!-- tag accessibilita': aria-label -->
 
                 <button 
                   @click="selectStudent()" 
@@ -45,22 +45,22 @@
                   type="button" 
                   aria-label="Seleziona uno studente da interrogare"
                 >
-                  Seleziona uno studente da chiamare
-                </button> <!--tag accessibilita': aria-label-->
+                  Seleziona uno studente da interrogare
+                </button> <!-- tag accessibilita': aria-label -->
             </div>
         </div>
 
-        <div id="studentCalledAlert" class="container-callbuttons" v-if = "showCalledMessage" aria-live="polite"> <!--tag accessibilita': aria-live-->
+        <div id="studentCalledAlert" class="container-callbuttons" v-if = "showCalledMessage" aria-live="polite"> <!-- tag accessibilita': aria-live -->
           <div class="d-grid gap-6 col-30">
             <div><br><br><br><br></div>
-            <div class="alert alert-success alert-dismissible d-flex" role="alert" > <!--tag accessibilita': role-->
+            <div class="alert alert-success alert-dismissible d-flex" role="alert" > <!-- tag accessibilita': role -->
               <span class="float-end"><font-awesome-icon icon="fa-solid fa-circle-check" /></span>
               <div style="font-size:20px; text-align:right; margin-left: 10px">
                 Studente chiamato!
                 <button
                   type="button"
                   class="btn-close"
-                  @click="closeAlert('#studentCalledAlert')"
+                  @click="closeAlert()"
                   aria-label="Chiudi"
                 ></button> 
               </div>  
@@ -78,7 +78,7 @@
                         <br>
                         
                         <!-- random number card -->
-                        <div class="card border-primary mb-3 mx-auto" style="width: 10rem; height: 10rem;" aria-label="Mostra numero random"> <!--tag accessibilita': aria-label-->
+                        <div class="card border-primary mb-3 mx-auto" style="width: 10rem; height: 10rem;" aria-label="Mostra numero random"> <!-- tag accessibilita': aria-label -->
                             <div class="card-body d-flex justify-content-center">
                                 <br>
                                 <div class="card-text text-center" v-if = "showRandomNumber" style="font-size: 36px;">
@@ -89,21 +89,22 @@
                     </div>
                 </div>
 
-                <div class="alert alert-primary" role="alert" style="margin-top: 50px" aria-label="Mostra nome studente estratto"> <!--tag accessibilita': role, aria-label-->
+                <div class="alert alert-primary" role="alert" style="margin-top: 50px" aria-label="Mostra nome studente estratto"> <!-- tag accessibilita': role, aria-label -->
                   <h4><u>Nome studente:</u></h4><br><h5>{{ calledStudent }}</h5>
                 </div> 
             </div>
            
-            <div id="testchoice" class="container-testchoicebuttons" aria-label="Scelta se interrogare lo studente estratto"> <!--tag accessibilita': aria-label-->
+            <div id="testchoice" class="container-testchoicebuttons" aria-label="Scelta se interrogare lo studente estratto"> <!-- tag accessibilita': aria-label -->
                 <br><br>
                 <div class="d-grid gap-3 col-20">
                     <button 
-                      @click="this.showCalledMessageRandom = true; 
-                      addToTested()" class="btn btn-success btn-lg" 
-                      type="button" aria-label="interroga oggi lo studente estratto"
+                      @click="this.showCalledMessageRandom = true, addToTested(this.randomNumber)" 
+                      class="btn btn-success btn-lg" 
+                      type="button" 
+                      aria-label="interroga oggi lo studente estratto"
                     >
-                        Interroga oggi
-                    </button> <!--tag accessibilita': aria-label-->
+                      Interroga oggi
+                    </button> <!-- tag accessibilita': aria-label -->
 
                     <button 
                       @click="this.showRandomNumber = false; getRandomStudent()" 
@@ -112,7 +113,7 @@
                       aria-label="non chiamare lo studente estratto"
                     >
                       Non chiamare per oggi
-                    </button> <!--tag accessibilita': aria-label-->
+                    </button> <!-- tag accessibilita': aria-label -->
 
                     <button 
                       @click="this.showRandomCard = false; 
@@ -122,7 +123,7 @@
                       aria-label="esci dall'estrazione random"
                     >
                       Esci
-                    </button> <!--tag accessibilita': aria-label-->
+                    </button> <!-- tag accessibilita': aria-label -->
                 </div>
             </div>
         </div>       
@@ -130,32 +131,31 @@
 
 
       <div class="col">
-        <div id="studentCalledAlert" class="container-testchoicebuttons d-flex" v-if = "showCalledMessageRandom" aria-live="polite"> <!--tag accessibilita': aria-live-->
-          <div class="alert alert-success alert-dismissible d-flex" role="alert">  <!--tag accessibilita': role-->
+        <div id="studentCalledAlert" class="container-testchoicebuttons d-flex" v-if = "showCalledMessageRandom" aria-live="polite"> <!-- tag accessibilita': aria-live -->
+          <div class="alert alert-success alert-dismissible d-flex" role="alert">  <!-- tag accessibilita': role -->
             <span classe="float-end"><font-awesome-icon icon="fa-solid fa-circle-check" /></span>
             <div style="font-size:20px; text-align:right; margin-left: 10px">
               Studente chiamato!
               <button
                 type="button"
                 class="btn-close"
-                @click="closeAlert('#studentCalledAlert')"
+                @click="closeAlert()"
                 aria-label="Close"
-              ></button> <!--tag accessibilita': aria-label-->
+              ></button> <!-- tag accessibilita': aria-label -->
             </div>  
           </div>
         </div>
 
         <div id="notTestedStudents" class="container-list d-flex">
-          <div class="list-group notTestedList" v-if="showNotTestedList" aria-label="Lista studenti che non interrogati"> <!--tag accessibilita': aria-label-->
+          <div class="list-group notTestedList" v-if="showNotTestedList" aria-label="Lista studenti che non interrogati"> <!-- tag accessibilita': aria-label -->
             <div class="list-group-item list-group-item-info">Lista studenti non interrogati</div>
             <button 
-              @click="showCalledMessage = true, 
-              addToTested()" 
+              @click="showCalledMessage = true, addToTested(index), selectStudent()" 
               type="button" 
               class="list-group-item list-group-item-action" 
               v-for="index in filteredNotTestedList" :key="index" 
               aria-label="Nome studente"
-            >  <!--tag accessibilita': aria-label-->
+            >  <!-- tag accessibilita': aria-label -->
               <span class="nomeStudente" aria-label="Nome studente">
                 {{ index+1 }}) {{ studentsList[index] }}
               </span>
@@ -165,27 +165,28 @@
       </div>
     </div>
 
-    <!--Modals-->
-    <!-- Modal to edit a student-->
+    <!-- Modals -->
+    <!-- Modal to edit a student -->
     <div
       class="modal fade"
       id="editStudentModal"
       tabindex="-1"
       aria-hidden="true"
       aria-labelledby="editStudentModalLabel"
-    > <!--tag accessibilita': aria-hidden, aria-labelledby -->
+      aria-live="assertive"
+    > <!-- tag accessibilita': aria-hidden, aria-labelledby, aria-live -->
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="editStudentModalLabel">
-              Modifica {{nomeStudente}}
+              Modifica {{ nomeStudente }}
             </h1>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-            ></button> <!--tag accessibilita': aria-label-->
+            ></button> <!-- tag accessibilita': aria-label -->
           </div>
           <div class="modal-body text-left">
             <div class="mb-3">
@@ -200,10 +201,10 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-info" data-bs-dismiss="modal" aria-label="Annulla modifiche"> <!--tag accessibilita': aria-label-->
+            <button type="button" class="btn btn-info" data-bs-dismiss="modal" aria-label="Annulla modifiche"> <!-- tag accessibilita': aria-label -->
               Annulla
             </button>
-            <button type="button" class="btn btn-primary" @click="saveStudent(indexStudente)" aria-label="Salva modifiche"> <!--tag accessibilita': aria-label-->
+            <button type="button" class="btn btn-primary" @click="saveStudent(indexStudente)" aria-label="Salva modifiche"> <!-- tag accessibilita': aria-label -->
               Salva
             </button>
           </div>
@@ -212,17 +213,18 @@
     </div>
   </div>
 
-  <!-- Modal to alert everyone has been tested-->
+  <!-- Modal to alert everyone has been tested -->
   <div
     class="modal fade"
     id="everyoneTestedModal"
     tabindex="-1"
     aria-hidden="true"
     aria-labelledby="everyoneTestedModalLabel"
-  > <!--tag accessibilita': aria-hidden, aria-labelledby -->
+    aria-live="assertive"
+  > <!-- tag accessibilita': aria-hidden, aria-labelledby, aria-live -->
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header text-center"> <strong>Tutti gli studenti di questa classe sono gia' stati interrogati!</strong></div>
+        <h6 class="modal-header text-center"><strong>Tutti gli studenti di questa classe sono gia' stati interrogati!</strong></h6>
         <div class="modal-body text-center">
           Vuoi <strong>cancellare</strong> la lista degli interrogati e riniziare le interrogazioni?
         </div>
@@ -233,7 +235,7 @@
             data-bs-dismiss="modal" 
             @click="clearAlreadyTested()" 
             aria-label="Cancella lista non interrogati"
-          > <!--tag accessibilita': aria-label-->
+          > <!-- tag accessibilita': aria-label -->
             Si
           </button>
 
@@ -243,7 +245,47 @@
             data-bs-dismiss="modal" 
             @click="this.showRandomCard = false" 
             aria-label="Non cancellare lista non interrogati"
-          > <!--tag accessibilita': aria-label-->
+          > <!-- tag accessibilita': aria-label -->
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+   <!-- Modal to delete a student from the students list -->
+   <div
+    class="modal fade"
+    id="deleteStudentModal"
+    tabindex="-1"
+    aria-hidden="true"
+    aria-labelledby="deleteStudentModalLabel"
+    aria-live="assertive"
+  > <!-- tag accessibilita': aria-hidden, aria-labelledby, aria-live -->
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <h5 class="modal-header text-center"><strong>Attenzione!</strong></h5>
+        <div class="modal-body text-center">
+          Vuoi <strong>eliminare</strong> {{ nomeStudente }} dall'elenco?
+        </div>
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-info" 
+            data-bs-dismiss="modal" 
+            @click="removeFromStudentsList(indexStudente)" 
+            aria-label="Cancella studente dall'elenco"
+          > <!-- tag accessibilita': aria-label -->
+            Si
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-primary" 
+            data-bs-dismiss="modal"  
+            aria-label="Non cancellare studente dall'elenco"
+          > <!-- tag accessibilita': aria-label -->
             No
           </button>
         </div>
@@ -292,8 +334,6 @@ export default {
     }
   },
 
-
-
   //TODO: correggere il ricavo dati dal db
   mounted() { //nota: ho commentato il codice perche' non c'e' la lista degli studenti gia' stati interrogati nel db
     //get lista studenti
@@ -309,6 +349,7 @@ export default {
     //   this.alreadyTested = questionedStudents;
     // });
   },
+
   methods: {
     editStudent(index) {
       this.nomeStudente = this.studentsList[index];
@@ -317,18 +358,29 @@ export default {
       $("#editStudentModal").modal("show");
     },
 
+    deleteStudent(index) {
+      this.nomeStudente = this.studentsList[index];
+      this.indexStudente = index;
+      $("#deleteStudentModal").modal("show");
+    },
+
     saveStudent(index) {
       //TODO: Salvataggio nel db
       this.studentsList[index] = this.studentNameInput;
       $("#editStudentModal").modal("hide");
     },
 
+    removeFromStudentsList(index) {
+      this.studentsList.splice(index,1);
+    },
+
     showEveryoneTested() {
       $("#everyoneTestedModal").modal("show"); 
     },
 
-    closeAlert(id) {
-      $(id).fadeOut(1000);
+    closeAlert() {
+      this.showCalledMessage = false;
+      this.showCalledMessageRandom = false;
     },
 
     // genera studente da interrogare
@@ -356,28 +408,29 @@ export default {
       else{
         this.nomeStudente = ""; //clear nome studente
       }
-
       this.randomNumber = index; //update random number
     },
     
 
     //TODO: da sistemare, ancora non ho la lista degli studenti gia' interrogati nel db
-    addToTested() { 
-      //aggiunge uno studente alla lista di chi e' gia' stato interrogato
-      this.alreadyTested.push(this.randomNumber); //update
-      localforage.setItem("questionedStudents", this.alreadyTested); 
+    //aggiunge uno studente alla lista di chi e' gia' stato interrogato
+    addToTested(index) { 
+      this.alreadyTested.push(index); //update
+      //localforage.setItem("questionedStudents", this.alreadyTested); 
     },
 
-    //funzione per selezionare uno studente specifico da interrogare
+    // selezionare uno studente specifico da interrogare
     selectStudent() {
       //se si sceglie di non chiamare a caso
       this.showRandomCard = false; //hide card per generare random
-      this.showNotTestedList = true; //show lista persone da interrogare
       this.showCalledMessageRandom = false;
+      this.showNotTestedList = true; //show lista persone da interrogare
+      if (this.alreadyTested.length == this.studentsList.length)
+        this.showEveryoneTested();
       
     },
 
-    //resetta la lista degli studenti gia' interrogati
+    // resetta la lista degli studenti gia' interrogati
     clearAlreadyTested() {
       this.showRandomCard = false;
       this.alreadyTested = [];
@@ -418,7 +471,6 @@ export default {
 
 //container card num random
 .container-randomnumber {
- 
   padding-top: 50px;
   margin-left:200px;
 }

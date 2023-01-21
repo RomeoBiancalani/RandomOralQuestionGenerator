@@ -8,7 +8,8 @@
         class="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#newClassModal"
-      >
+        aria-label="Inserire una nuova classe"
+      > <!-- tag accessibilita': aria-label -->
         <font-awesome-icon icon="fa-plus"></font-awesome-icon>
         Nuova Classe
       </button>
@@ -20,7 +21,7 @@
       <div
         class="alert alert-primary alert-dismissible d-flex align-items-center"
         role="alert"
-      >
+      > <!-- tag accessibilita': role -->
         <font-awesome-icon icon="fa-solid fa-check" style="margin-right: 5px" />
         <div>
           Classe aggiunta con successo!
@@ -30,7 +31,7 @@
             class="btn-close"
             @click="closeAlert('#classCreatedAlert')"
             aria-label="Close"
-          ></button>
+          ></button> <!-- tag accessibilita': aria-label -->
         </div>
       </div>
     </div>
@@ -46,7 +47,7 @@
       tabindex="-1"
       aria-hidden="true"
       aria-labelledby="newClassModalLabel"
-    >
+    > <!-- tag accessibilita': aria-hidden, aria-labelledby -->
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -58,14 +59,14 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-            ></button>
+            ></button> <!-- tag accessibilita': aria-label -->
           </div>
           <div class="modal-body">
             <div id="errorClass" style="display: none">
               <div
                 class="alert alert-info alert-dismissible d-flex align-items-center"
                 role="alert"
-              >
+              > <!-- tag accessibilita': role -->
                 <font-awesome-icon
                   icon="fa-solid fa-circle-exclamation"
                   style="margin-right: 5px"
@@ -82,12 +83,12 @@
               </div>
             </div>
 
-            <h5>
+            <h5 aria-label="Info su aggiunta classe">
               Per aggiungere una nuova classe segui le istruzioni indicate qua
               sotto.
-            </h5>
+            </h5> <!-- tag accessibilita': aria-label -->
 
-            <div class="mb-3">
+            <div class="mb-3" aria-label="Input informazioni nuova classe">
               <label for="className" class="form-label">Nome Classe</label>
               <input
                 type="text"
