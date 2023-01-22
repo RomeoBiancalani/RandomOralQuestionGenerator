@@ -45,7 +45,7 @@
                   type="button" 
                   aria-label="Seleziona uno studente da interrogare"
                 >
-                  Seleziona uno studente da interrogare
+                  Scelta manuale
                 </button> <!-- tag accessibilita': aria-label -->
             </div>
         </div>
@@ -68,7 +68,7 @@
           </div>
         </div>
                 
-        <div id="randomCard" class="d-flex" v-if = "showRandomCard" >
+        <div id="randomCard" class="d-flex randomNumber" v-if = "showRandomCard" >
             <div id="randomNumber" class="container-randomnumber justify-content-end">
                 <div class="card text-bg-light border-primary mb-3" style="width: 25rem;height: 20rem;">
                     <div class="card-body">
@@ -93,8 +93,9 @@
                   <h4><u>Nome studente:</u></h4><br><h5>{{ calledStudent }}</h5>
                 </div> 
             </div>
-           
-            <div id="testchoice" class="container-testchoicebuttons" aria-label="Scelta se interrogare lo studente estratto"> <!-- tag accessibilita': aria-label -->
+          
+        </div>     
+        <div id="testchoice" class="container-testchoicebuttons" v-if = "showRandomCard" aria-label="Scelta se interrogare lo studente estratto"> <!-- tag accessibilita': aria-label -->
                 <br><br>
                 <div class="d-grid gap-3 col-20">
                     <button 
@@ -125,8 +126,7 @@
                       Esci
                     </button> <!-- tag accessibilita': aria-label -->
                 </div>
-            </div>
-        </div>       
+            </div>  
       </div>
 
 
@@ -303,7 +303,7 @@ export default {
   data() {
     return {
       randomNumber: 0,
-      studentsList: ["stud 1", "stud 2","stud 3"], //lista di tutti gli studenti
+      studentsList: ["stud 1", "stud 2", "stud 3"], //lista di tutti gli studenti
       alreadyTested: [], //lista studenti gia' interrogati
 
       //show flags
@@ -312,12 +312,11 @@ export default {
       showNotTestedList: false, //visualizza lista studenti non interrogati
       showCalledMessage: false, //visualizza il messaggio di chiamata
       showCalledMessageRandom: false, //viene visualizzato quando viene interrogato lo studente random
-      
+
       nomeStudente: "",
       indexStudente: 0,
       studentNameInput: "",
       calledStudent: "", //visualizza nome studente chiamato
-      
     };
   },
 
@@ -329,13 +328,14 @@ export default {
         if (!this.alreadyTested.includes(index)) {
           notTestedIndexes.push(index);
         }
-      })
+      });
       return notTestedIndexes;
-    }
+    },
   },
 
   //TODO: correggere il ricavo dati dal db
-  mounted() { //nota: ho commentato il codice perche' non c'e' la lista degli studenti gia' stati interrogati nel db
+  mounted() {
+    //nota: ho commentato il codice perche' non c'e' la lista degli studenti gia' stati interrogati nel db
     //get lista studenti
     localforage.getItem("classes").then((value) => {
       // const classes = localforage.getItem("classes");
@@ -343,7 +343,6 @@ export default {
       // const className = url.split("/").pop(); //ricavo il nome della classe corrente dall'url (da correggere)
       // this.studentsList = value.find(c => c.name === className);
     });
-  
 
     // localforage.getItem("questionedStudents").then((alreadyTested) => {
     //   this.alreadyTested = questionedStudents;
@@ -371,11 +370,11 @@ export default {
     },
 
     removeFromStudentsList(index) {
-      this.studentsList.splice(index,1);
+      this.studentsList.splice(index, 1);
     },
 
     showEveryoneTested() {
-      $("#everyoneTestedModal").modal("show"); 
+      $("#everyoneTestedModal").modal("show");
     },
 
     closeAlert() {
@@ -391,11 +390,12 @@ export default {
       this.showNotTestedList = false; //hide lista non interrogati
       this.showCalledMessage = false; //hide messaggio studente interrogato
       this.showCalledMessageRandom = false; //hide messaggio studente interrogato
-      
-      if (this.alreadyTested.length != this.studentsList.length) { // se non sono stati interrogati tutti
+
+      if (this.alreadyTested.length != this.studentsList.length) {
+        // se non sono stati interrogati tutti
         do {
-          index = Math.floor(Math.random() * (this.studentsList.length)); // random index
-        } while(this.alreadyTested.includes(index));
+          index = Math.floor(Math.random() * this.studentsList.length); // random index
+        } while (this.alreadyTested.includes(index));
       } else {
         this.nomeStudente = "";
         this.showEveryoneTested(); //show modal
@@ -404,19 +404,17 @@ export default {
       // estrai studente
       if (index != -1) {
         this.calledStudent = this.studentsList[index]; //setta il nome dello studente chiamato per visualizzarlo
-      }
-      else{
+      } else {
         this.nomeStudente = ""; //clear nome studente
       }
       this.randomNumber = index; //update random number
     },
-    
 
     //TODO: da sistemare, ancora non ho la lista degli studenti gia' interrogati nel db
     //aggiunge uno studente alla lista di chi e' gia' stato interrogato
-    addToTested(index) { 
+    addToTested(index) {
       this.alreadyTested.push(index); //update
-      //localforage.setItem("questionedStudents", this.alreadyTested); 
+      //localforage.setItem("questionedStudents", this.alreadyTested);
     },
 
     // selezionare uno studente specifico da interrogare
@@ -427,7 +425,6 @@ export default {
       this.showNotTestedList = true; //show lista persone da interrogare
       if (this.alreadyTested.length == this.studentsList.length)
         this.showEveryoneTested();
-      
     },
 
     // resetta la lista degli studenti gia' interrogati
@@ -435,7 +432,6 @@ export default {
       this.showRandomCard = false;
       this.alreadyTested = [];
     },
-
   },
 };
 </script>
@@ -470,11 +466,14 @@ export default {
 }
 
 //container card num random
-.container-randomnumber {
-  padding-top: 50px;
-  margin-left:200px;
+// .container-randomnumber {
+//   padding-top: 50px;
+//   margin-left:200px;
+// }
+.randomNumber {
+  justify-content: center;
+  margin-top: 50px;
 }
-
 //container opzioni se interrogare, non interrogare o uscire
 .container-testchoicebuttons {
   text-align: center;
@@ -485,7 +484,7 @@ export default {
 .container-callbuttons {
   align-items: center;
   display: flex;
-  margin-left:200px;
+  // margin-left:200px;
+  justify-content: center;
 }
-
 </style>

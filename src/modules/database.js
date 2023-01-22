@@ -14,6 +14,7 @@ export async function insertClass(name, students) {
     else {
         studentsList = students.split("\n");
     }
+    console.log("ClassStudentsList", name, studentsList)
     let classes = await localforage.getItem('classes');
     console.log("Classes", classes)
     if (classes === null) {
@@ -33,7 +34,7 @@ export async function insertClass(name, students) {
     classes.push({
         name: name,
         students: studentsList,
-        studentsNumber: studentsList.lenght,
+        studentsNumber: studentsList.length,
         questionedNumber: 0,
         questionedStudents: []
     });

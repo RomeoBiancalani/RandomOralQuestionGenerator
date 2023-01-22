@@ -9,7 +9,8 @@
         data-bs-toggle="modal"
         data-bs-target="#newClassModal"
         aria-label="Inserire una nuova classe"
-      > <!-- tag accessibilita': aria-label -->
+      >
+        <!-- tag accessibilita': aria-label -->
         <font-awesome-icon icon="fa-plus"></font-awesome-icon>
         Nuova Classe
       </button>
@@ -21,7 +22,8 @@
       <div
         class="alert alert-primary alert-dismissible d-flex align-items-center"
         role="alert"
-      > <!-- tag accessibilita': role -->
+      >
+        <!-- tag accessibilita': role -->
         <font-awesome-icon icon="fa-solid fa-check" style="margin-right: 5px" />
         <div>
           Classe aggiunta con successo!
@@ -31,13 +33,13 @@
             class="btn-close"
             @click="closeAlert('#classCreatedAlert')"
             aria-label="Close"
-          ></button> <!-- tag accessibilita': aria-label -->
+          ></button>
+          <!-- tag accessibilita': aria-label -->
         </div>
       </div>
     </div>
-    <!-- TODO: Studiare che cosa e' suspence -->
     <suspense>
-      <classes :classes="classesList"/>
+      <classes :classes.sync="classesList" />
     </suspense>
 
     <!-- Modal Nuova classe -->
@@ -47,7 +49,8 @@
       tabindex="-1"
       aria-hidden="true"
       aria-labelledby="newClassModalLabel"
-    > <!-- tag accessibilita': aria-hidden, aria-labelledby -->
+    >
+      <!-- tag accessibilita': aria-hidden, aria-labelledby -->
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -59,14 +62,16 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-            ></button> <!-- tag accessibilita': aria-label -->
+            ></button>
+            <!-- tag accessibilita': aria-label -->
           </div>
           <div class="modal-body">
             <div id="errorClass" style="display: none">
               <div
                 class="alert alert-info alert-dismissible d-flex align-items-center"
                 role="alert"
-              > <!-- tag accessibilita': role -->
+              >
+                <!-- tag accessibilita': role -->
                 <font-awesome-icon
                   icon="fa-solid fa-circle-exclamation"
                   style="margin-right: 5px"
@@ -86,7 +91,8 @@
             <h5 aria-label="Info su aggiunta classe">
               Per aggiungere una nuova classe segui le istruzioni indicate qua
               sotto.
-            </h5> <!-- tag accessibilita': aria-label -->
+            </h5>
+            <!-- tag accessibilita': aria-label -->
 
             <div class="mb-3" aria-label="Input informazioni nuova classe">
               <label for="className" class="form-label">Nome Classe</label>
@@ -126,6 +132,48 @@ Gaia Martinelli"
         </div>
       </div>
     </div>
+
+    <!-- Modal eliminazione classe -->
+    <div
+      class="modal fade"
+      id="deleteClassModal"
+      tabindex="-1"
+      aria-hidden="true"
+      aria-labelledby="deleteClassModalLabel"
+      aria-live="assertive"
+    >
+      <!-- tag accessibilita': aria-hidden, aria-labelledby, aria-live -->
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <h5 class="modal-header text-center"><strong>Attenzione!</strong></h5>
+          <div class="modal-body text-center">
+            Vuoi <strong>eliminare</strong> {{ nomeClasse }}?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-info"
+              data-bs-dismiss="modal"
+              @click="removeFromClassesList(indexClasse)"
+              aria-label="Cancella la classe"
+            >
+              <!-- tag accessibilita': aria-label -->
+              Si
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              aria-label="Non cancellare la classe"
+            >
+              <!-- tag accessibilita': aria-label -->
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -146,18 +194,19 @@ export default defineComponent({
       console.log("Classi", value, error);
       classes.value = value;
       classes.value.forEach((el) => {
-        el.questionedPercent = (el.studentsQuestioned / el.studentsNumber) * 100;
+        el.questionedPercent =
+          (el.studentsQuestioned / el.studentsNumber) * 100;
       });
     });
-
-
 
     return {
       name: ref(""),
       classStudentsInput: "",
       classNameInput: "",
       errorClassText: ref(""),
-      classesList: classes,
+      classesList: classes, // ref
+      nomeClasse: ref(""),
+
     };
   },
   mounted() {
@@ -207,11 +256,8 @@ export default defineComponent({
     closeAlert(id) {
       $(id).fadeOut(1000);
     },
-    
   },
-  watch: {
-
-  }
+  watch: {},
 });
 </script>
 

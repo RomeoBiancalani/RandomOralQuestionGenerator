@@ -16,7 +16,6 @@ npm run dev
 ### Home Page
 
 - [] Aggiungere handler per invio sul input name
-- [] Creare la dashboard con statistiche
 
 ### Classi
 
@@ -26,4 +25,5 @@ npm run dev
 
 ### Backend
 
-- [] Creare un modulo per il select e l'insert nel db
+- [x] Creare un modulo per il select e l'insert nel db
+- [] Inserire il title della web page
