@@ -2,7 +2,8 @@
   <nav class="navbar navbar-expand-lg navbar-custom" role="navigation">
     <div class="container-fluid">
       <!-- {{$route.path}} -->
-      <router-link class="navbar-brand" to="/">{{ navbarBrand }}</router-link>
+      <!--<router-link class="navbar-brand" to="/">{{ navbarBrand }}</router-link>-->
+      <router-link class="navbar-brand" to="/"><img src="../assets/logo.png" alt="Bootstrap" width="45" height="45"></router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -42,10 +43,6 @@ export default defineComponent({
         {
           name: "Home",
           path: "/",
-        },
-        {
-          name: "Classi",
-          path: "/classi",
         },
         {
           name: "Aiuto",

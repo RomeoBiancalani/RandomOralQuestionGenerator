@@ -174,6 +174,43 @@ Gaia Martinelli"
         </div>
       </div>
     </div>
+
+    <!-- Modal Inserisci Nome -->
+    <!-- TODO: Fixare il vertically centered che non va con jquery -->
+    <div
+      class="modal fade"
+      id="insertNameModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="insertNameModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="insertNameModalLabel">
+              Inserisci il tuo nome
+            </h1>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="className" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="generalName" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="saveGlobalName"
+            >
+              Salva
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -195,7 +232,7 @@ export default defineComponent({
       classes.value = value;
       classes.value.forEach((el) => {
         el.questionedPercent =
-          (el.studentsQuestioned / el.studentsNumber) * 100;
+          (el.questionedNumber / el.studentsNumber) * 100;
       });
     });
 
@@ -206,13 +243,17 @@ export default defineComponent({
       errorClassText: ref(""),
       classesList: classes, // ref
       nomeClasse: ref(""),
-
     };
   },
   mounted() {
     const vm = this;
     localforage.getItem("globalName", function (err, value) {
-      vm.name = value;
+      if (value == null) {
+        $("#insertNameModal").modal("show");
+      } else {
+        vm.name = value;
+        $("#insertNameModal").modal("hide");
+      }
     });
 
     // Controllo quando si chiude il modal dell'aggiunta della classe per pulire le variabili
@@ -255,6 +296,20 @@ export default defineComponent({
     },
     closeAlert(id) {
       $(id).fadeOut(1000);
+    },
+    saveGlobalName: function () {
+      const vm = this;
+      $("#insertNameModal").modal("hide");
+      const name = $("#generalName").val();
+      localforage
+        .setItem("globalName", name)
+        .then(function (value) {
+          console.log(value);
+          vm.name = name;
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
     },
   },
   watch: {},

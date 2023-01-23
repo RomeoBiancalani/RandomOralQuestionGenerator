@@ -82,7 +82,7 @@
                             <div class="card-body d-flex justify-content-center">
                                 <br>
                                 <div class="card-text text-center" v-if = "showRandomNumber" style="font-size: 36px;">
-                                  {{ randomNumber + 1}}
+                                  {{ randomNumber }}
                                 </div>
                             </div>
                         </div>   
@@ -296,27 +296,51 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { useRoute, useRouter } from 'vue-router';
+import { getClassByName, saveStudentByClass, addToQuestioned } from "@/modules/database.js";
 import localforage from "localforage";
 
 export default {
-  data() {
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    // console.log("Route", JSON.stringify(route))
+    if (route.params.className == undefined) {
+      router.push("/");
+    }
+    let listaStudenti = ref([]);
+    let studentiInterrogati = ref([]);
+    const nomeClasse = route.params.className;
+    getClassByName(nomeClasse).then(
+      (classe) => {
+        if (classe !== {}) {
+          listaStudenti.value = classe.students;
+          studentiInterrogati.value = classe.questionedStudents;
+        }
+      }
+    )
+
+
+
+
     return {
-      randomNumber: 0,
-      studentsList: ["stud 1", "stud 2", "stud 3"], //lista di tutti gli studenti
-      alreadyTested: [], //lista studenti gia' interrogati
+      nomeClasse,
+      randomNumber: ref(0),
+      studentsList: listaStudenti, //lista di tutti gli studenti
+      alreadyTested: studentiInterrogati, //lista studenti gia' interrogati
 
       //show flags
-      showRandomCard: false, //visualizza card num random
-      showRandomNumber: true, //visualizza num random
-      showNotTestedList: false, //visualizza lista studenti non interrogati
-      showCalledMessage: false, //visualizza il messaggio di chiamata
-      showCalledMessageRandom: false, //viene visualizzato quando viene interrogato lo studente random
+      showRandomCard: ref(false), //visualizza card num random
+      showRandomNumber: ref(true), //visualizza num random
+      showNotTestedList: ref(false), //visualizza lista studenti non interrogati
+      showCalledMessage: ref(false), //visualizza il messaggio di chiamata
+      showCalledMessageRandom: ref(false), //viene visualizzato quando viene interrogato lo studente random
 
-      nomeStudente: "",
-      indexStudente: 0,
-      studentNameInput: "",
-      calledStudent: "", //visualizza nome studente chiamato
+      nomeStudente: ref(""),
+      indexStudente: ref(0),
+      studentNameInput: ref(""),
+      calledStudent: ref(""), //visualizza nome studente chiamato
     };
   },
 
@@ -332,17 +356,15 @@ export default {
       return notTestedIndexes;
     },
   },
-
-  //TODO: correggere il ricavo dati dal db
   mounted() {
     //nota: ho commentato il codice perche' non c'e' la lista degli studenti gia' stati interrogati nel db
     //get lista studenti
-    localforage.getItem("classes").then((value) => {
-      // const classes = localforage.getItem("classes");
-      // const url = this.$route.path;
-      // const className = url.split("/").pop(); //ricavo il nome della classe corrente dall'url (da correggere)
-      // this.studentsList = value.find(c => c.name === className);
-    });
+    // localforage.getItem("classes").then((value) => {
+    //   // const classes = localforage.getItem("classes");
+    //   // const url = this.$route.path;
+    //   // const className = url.split("/").pop(); //ricavo il nome della classe corrente dall'url (da correggere)
+    //   // this.studentsList = value.find(c => c.name === className);
+    // });
 
     // localforage.getItem("questionedStudents").then((alreadyTested) => {
     //   this.alreadyTested = questionedStudents;
@@ -350,6 +372,11 @@ export default {
   },
 
   methods: {
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
     editStudent(index) {
       this.nomeStudente = this.studentsList[index];
       this.indexStudente = index;
@@ -363,8 +390,10 @@ export default {
       $("#deleteStudentModal").modal("show");
     },
 
-    saveStudent(index) {
+    async saveStudent(index) {
       //TODO: Salvataggio nel db
+      console.log("Edit studente", this.nomeClasse, index, this.studentNameInput)
+      await saveStudentByClass(this.nomeClasse, index, this.studentNameInput)
       this.studentsList[index] = this.studentNameInput;
       $("#editStudentModal").modal("hide");
     },
@@ -384,6 +413,7 @@ export default {
 
     // genera studente da interrogare
     getRandomStudent() {
+      console.log("Estraggo studente random")
       let index = -1; // indice studente da chiamare
       this.showRandomCard = true; //show random card
       this.showRandomNumber = true; //show random number
@@ -394,7 +424,8 @@ export default {
       if (this.alreadyTested.length != this.studentsList.length) {
         // se non sono stati interrogati tutti
         do {
-          index = Math.floor(Math.random() * this.studentsList.length); // random index
+          index = this.getRandomInt(1, this.studentsList.length)
+          console.log("Numero estratto: ", index);
         } while (this.alreadyTested.includes(index));
       } else {
         this.nomeStudente = "";
@@ -414,6 +445,7 @@ export default {
     //aggiunge uno studente alla lista di chi e' gia' stato interrogato
     addToTested(index) {
       this.alreadyTested.push(index); //update
+      addToQuestioned(this.nomeClasse, index);
       //localforage.setItem("questionedStudents", this.alreadyTested);
     },
 

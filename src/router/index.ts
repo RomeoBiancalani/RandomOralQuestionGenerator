@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import HelpView from "../views/HelpView.vue";
+import SecurityView from "../views/SecurityView.vue";
 import ClassesView from "../views/ClassesView.vue";
 import DefaultLayout from "../layout/DefaultLayout.vue";
 import SingleclassView from "../views/SingleclassView.vue";
@@ -25,26 +26,12 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
-        component: HomeView,
+        component: ClassesView,
       },
     ],
   },
   {
-    path: "/classi",
-    name: "Classes",
-    component: DefaultLayout,
-    children: [
-      {
-        path: "",
-        component: ClassesView,
-      }
-    ],
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/classi/:class",
+    path: "/classi/:className",
     name: "SingleClass",
     component: DefaultLayout,
     children: [
@@ -65,6 +52,17 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "",
         component: HelpView,
+      },
+    ],
+  },
+  {
+    path: "/security",
+    name: "Security",
+    component: DefaultLayout,
+    children: [
+      {
+        path: "",
+        component: SecurityView,
       },
     ],
   },
