@@ -97,36 +97,52 @@
         </div>     
         <div id="testchoice" class="container-testchoicebuttons" v-if = "showRandomCard" aria-label="Scelta se interrogare lo studente estratto"> <!-- tag accessibilita': aria-label -->
                 <br><br>
-                <div class="d-grid gap-3 col-20">
+                <!-- <div class="d-grid gap-3 col-20">
                     <button 
                       @click="this.showCalledMessageRandom = true, addToTested(this.randomNumber)" 
-                      class="btn btn-success btn-lg" 
+                      class="btn btn-success btn-md" 
                       type="button" 
                       aria-label="interroga oggi lo studente estratto"
                     >
                       Interroga oggi
-                    </button> <!-- tag accessibilita': aria-label -->
+                    </button>  tag accessibilita': aria-label 
 
                     <button 
                       @click="this.showRandomNumber = false; getRandomStudent()" 
-                      class="btn btn-info btn-lg" 
+                      class="btn btn-info btn-md" 
                       type="button" 
                       aria-label="non chiamare lo studente estratto"
                     >
                       Non chiamare per oggi
-                    </button> <!-- tag accessibilita': aria-label -->
+                    </button> tag accessibilita': aria-label 
 
                     <button 
                       @click="this.showRandomCard = false; 
                       this.showCalledMessageRandom = false" 
-                      class="btn btn-danger btn-lg" 
+                      class="btn btn-danger btn-md" 
                       type="button" 
                       aria-label="esci dall'estrazione random"
                     >
                       Esci
-                    </button> <!-- tag accessibilita': aria-label -->
-                </div>
-            </div>  
+                    </button> tag accessibilita': aria-label 
+                  </div> -->
+              <div class="btn-group questionedBtns" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-success btn-md"  
+                  aria-label="Interroga oggi lo studente estratto"
+                  @click="this.showCalledMessageRandom = true, addToTested(this.randomNumber - 1)" 
+                >
+                Interroga</button>
+                <button type="button" class="btn btn-info btn-md" 
+                  aria-label="Non chiamare lo studente estratto"
+                  @click="this.showRandomNumber = false; getRandomStudent()" 
+                >Non chiamare</button>
+                <button type="button" class="btn btn-danger btn-md"
+                  @click="this.showRandomCard = false; this.showCalledMessageRandom = false" 
+                  aria-label="Esci dall'estrazione random"
+                >Esci</button>
+              </div>
+            </div>   
+            
       </div>
 
 
@@ -157,7 +173,7 @@
               aria-label="Nome studente"
             >  <!-- tag accessibilita': aria-label -->
               <span class="nomeStudente" aria-label="Nome studente">
-                {{ index+1 }}) {{ studentsList[index] }}
+                {{ index + 1}}) {{ studentsList[index] }}
               </span>
             </button>
           </div>
@@ -297,8 +313,13 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { useRoute, useRouter } from 'vue-router';
-import { getClassByName, saveStudentByClass, addToQuestioned } from "@/modules/database.js";
+import { useRoute, useRouter } from "vue-router";
+import {
+  getClassByName,
+  saveStudentByClass,
+  addToQuestioned,
+  clearQuestioned,
+} from "@/modules/database.js";
 import localforage from "localforage";
 
 export default {
@@ -312,17 +333,12 @@ export default {
     let listaStudenti = ref([]);
     let studentiInterrogati = ref([]);
     const nomeClasse = route.params.className;
-    getClassByName(nomeClasse).then(
-      (classe) => {
-        if (classe !== {}) {
-          listaStudenti.value = classe.students;
-          studentiInterrogati.value = classe.questionedStudents;
-        }
+    getClassByName(nomeClasse).then((classe) => {
+      if (classe !== {}) {
+        listaStudenti.value = classe.students;
+        studentiInterrogati.value = classe.questionedStudents;
       }
-    )
-
-
-
+    });
 
     return {
       nomeClasse,
@@ -365,7 +381,6 @@ export default {
     //   // const className = url.split("/").pop(); //ricavo il nome della classe corrente dall'url (da correggere)
     //   // this.studentsList = value.find(c => c.name === className);
     // });
-
     // localforage.getItem("questionedStudents").then((alreadyTested) => {
     //   this.alreadyTested = questionedStudents;
     // });
@@ -373,9 +388,9 @@ export default {
 
   methods: {
     getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     editStudent(index) {
       this.nomeStudente = this.studentsList[index];
@@ -392,8 +407,13 @@ export default {
 
     async saveStudent(index) {
       //TODO: Salvataggio nel db
-      console.log("Edit studente", this.nomeClasse, index, this.studentNameInput)
-      await saveStudentByClass(this.nomeClasse, index, this.studentNameInput)
+      console.log(
+        "Edit studente",
+        this.nomeClasse,
+        index,
+        this.studentNameInput
+      );
+      await saveStudentByClass(this.nomeClasse, index, this.studentNameInput);
       this.studentsList[index] = this.studentNameInput;
       $("#editStudentModal").modal("hide");
     },
@@ -413,7 +433,7 @@ export default {
 
     // genera studente da interrogare
     getRandomStudent() {
-      console.log("Estraggo studente random")
+      console.log("Estraggo studente random");
       let index = -1; // indice studente da chiamare
       this.showRandomCard = true; //show random card
       this.showRandomNumber = true; //show random number
@@ -424,9 +444,9 @@ export default {
       if (this.alreadyTested.length != this.studentsList.length) {
         // se non sono stati interrogati tutti
         do {
-          index = this.getRandomInt(1, this.studentsList.length)
+          index = this.getRandomInt(1, this.studentsList.length);
           console.log("Numero estratto: ", index);
-        } while (this.alreadyTested.includes(index));
+        } while (this.alreadyTested.includes(index - 1));
       } else {
         this.nomeStudente = "";
         this.showEveryoneTested(); //show modal
@@ -434,7 +454,7 @@ export default {
 
       // estrai studente
       if (index != -1) {
-        this.calledStudent = this.studentsList[index]; //setta il nome dello studente chiamato per visualizzarlo
+        this.calledStudent = this.studentsList[index - 1]; //setta il nome dello studente chiamato per visualizzarlo
       } else {
         this.nomeStudente = ""; //clear nome studente
       }
@@ -444,6 +464,7 @@ export default {
     //TODO: da sistemare, ancora non ho la lista degli studenti gia' interrogati nel db
     //aggiunge uno studente alla lista di chi e' gia' stato interrogato
     addToTested(index) {
+      console.log("Aggiungo agli interrogati", index);
       this.alreadyTested.push(index); //update
       addToQuestioned(this.nomeClasse, index);
       //localforage.setItem("questionedStudents", this.alreadyTested);
@@ -463,6 +484,7 @@ export default {
     clearAlreadyTested() {
       this.showRandomCard = false;
       this.alreadyTested = [];
+      clearQuestioned(this.nomeClasse);
     },
   },
 };
@@ -509,7 +531,6 @@ export default {
 //container opzioni se interrogare, non interrogare o uscire
 .container-testchoicebuttons {
   text-align: center;
-  padding-left: 100px;
 }
 
 //container opzioni se chiamare random o no
@@ -518,5 +539,12 @@ export default {
   display: flex;
   // margin-left:200px;
   justify-content: center;
+}
+
+.questionedBtns {
+  width: 100%;
+}
+.questionedBtns > .btn {
+  width: 33.3%;
 }
 </style>

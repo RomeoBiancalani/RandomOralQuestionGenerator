@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import HelpView from "../views/HelpView.vue";
 import SecurityView from "../views/SecurityView.vue";
 import ClassesView from "../views/ClassesView.vue";
+import SettingsView from "../views/SettingsView.vue";
 import DefaultLayout from "../layout/DefaultLayout.vue";
 import SingleclassView from "../views/SingleclassView.vue";
 import localforage from "localforage";
@@ -65,6 +66,20 @@ const routes: Array<RouteRecordRaw> = [
         component: SecurityView,
       },
     ],
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: DefaultLayout,
+    children: [
+      {
+        path: "",
+        component: SettingsView,
+      },
+    ],
+    meta: {
+      requiresAuth: true
+    }
   },
 
   // {

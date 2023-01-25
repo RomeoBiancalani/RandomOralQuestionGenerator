@@ -48,6 +48,10 @@ export default defineComponent({
           name: "Aiuto",
           path: "/help",
         },
+        {
+          name: "Impostazioni",
+          path: "/settings",
+        },
       ],
     };
   },

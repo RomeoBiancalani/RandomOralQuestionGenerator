@@ -27,6 +27,17 @@ export async function addToQuestioned(className, index) {
     }
 }
 
+export async function clearQuestioned(className) {
+    const classes = await localforage.getItem('classes');
+    for (let i = 0; i < classes.length; i++) {
+        if (classes[i].name === className) {
+            classes[i].questionedStudents = [];
+            classes[i].questionedNumber = 0;
+            await localforage.setItem('classes', classes);
+        }
+    }
+}
+
 // addToQuestioned
 
 
