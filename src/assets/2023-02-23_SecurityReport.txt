@@ -1,0 +1,59 @@
+## Security Report ##
+
+## Compiled By SkipWire ##
+2023-01-02
+
+## DNS Scan:
+DNS 12-6652  ..ok
+DNS 12-5422  ..ok
+DNS 12-7683  ..down
+DNS 12-8456  ..ok
+DNS 12-9858  ..ok
+
+No vulns found
+
+## Host Scan:
+localhost:8080      ..ok
+teacherhub.it:8080  ..ok
+
+No vulns found
+
+
+## Port scan:
+teacherhub.it:
+  8080 ssh     ..ok (filtered)
+  80 http      ..ok (filtered)
+  21 ftp       ..ok (closed)
+  25 smtp      ..ok (closed)
+  23 telnet    ..ok (closed)
+
+All unused ports are closed
+All used ports are filtered
+No vulns found
+
+## Services scan:
+techerhub.it:
+  telnet    ..off
+  ftp       ..on
+  smtp      ..on
+  xampp     ..off
+  apache2   ..on
+  apache    ..off
+  sql-i     ..on
+  mariadb   ..on
+  mongo     ..off
+
+  All unused services are off
+
+  No vulns found
+
+## Malware detection scan:
+  Norton for servers        ..on
+  basic_std                 ..on
+  sover_malware_det         ..on
+  soupscrape                ..stby
+
+  All unused processes are stby
+  All used processes are on
+
+  No vulns found

@@ -1,0 +1,31 @@
+// Import our variable overrides.
+// Go here to set custom values for Bootstrap vars
+@import "./abstracts/variables";
+
+// Overrides
+// Navbar
+@import "./overrides/navbar.scss";
+
+// Import Bootstrap functions, vars and mixins
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+// Import our map amends
+// Go here to run any Sass map amends on Bootstrap Sass maps
+@import "./abstracts/map-amends";
+
+// Bootstrap main import
+@import "~bootstrap/scss/bootstrap";
+
+// Modifica font
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+:root {
+  --bs-body-font-family: "Poppins", sans-serif;
+  --bs-body-color: $secondary;
+}
+
+.text-left {
+  text-align: left;
+}
